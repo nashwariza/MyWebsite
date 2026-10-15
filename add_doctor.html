@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediplus Admin - Add Doctor</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background-color: #4b12a5;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 22px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background-color: #6828c7;
+        }
+
+        /* Main content */
+        .main {
+            margin-left: 220px;
+            padding: 30px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 26px;
+            color: #333;
+        }
+
+        .back-btn {
+            background-color: #198754;
+            color: white;
+            padding: 11px 18px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .back-btn:hover {
+            background-color: #146c43;
+        }
+
+        /* Form container */
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px #ddd;
+            max-width: 1000px;
+        }
+
+        .form-container h2 {
+            color: #4b12a5;
+            margin-bottom: 25px;
+            font-size: 22px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4b12a5;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input[type="file"] {
+            background-color: #fafafa;
+        }
+
+        /* Available days */
+        .days-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .days-container label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: normal;
+            cursor: pointer;
+        }
+
+        .days-container input {
+            width: auto;
+            accent-color: #4b12a5;
+        }
+
+        /* Form buttons */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 15px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background-color: #4b12a5;
+        }
+
+        .save-btn:hover {
+            background-color: #6828c7;
+        }
+
+        .cancel-btn {
+            background-color: #6c757d;
+        }
+
+        .cancel-btn:hover {
+            background-color: #565e64;
+        }
+
+        /* Responsive layout */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 160px;
+                padding: 20px 10px;
+            }
+
+            .sidebar h2 {
+                font-size: 18px;
+            }
+
+            .sidebar a {
+                font-size: 13px;
+            }
+
+            .main {
+                margin-left: 160px;
+                padding: 15px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar {
+                width: 120px;
+                padding: 15px 7px;
+            }
+
+            .sidebar h2 {
+                font-size: 15px;
+            }
+
+            .sidebar a {
+                font-size: 11px;
+                padding: 10px 5px;
+                overflow-wrap: anywhere;
+            }
+
+            .main {
+                margin-left: 120px;
+                padding: 10px;
+            }
+
+            .topbar h1 {
+                font-size: 22px;
+            }
+
+            .form-container {
+                padding: 15px;
+            }
+
+            .form-container h2 {
+                font-size: 19px;
+            }
+
+            .days-container {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Mediplus Admin</h2>
+
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+        <a href="{% url 'doctors' %}" class="active">Doctors</a>
+        <a href="appointments.html">Appointments</a>
+        <a href="enquiries.html">Enquiries</a>
+        <a href="subscribers.html">Newsletter Subscribers</a>
+        <a href="settings.html">Settings</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <div class="topbar">
+            <h1>Add Doctor</h1>
+
+            <a href="{% url 'doctors' %}" class="back-btn">
+                Back to Doctors
+            </a>
+        </div>
+
+        <!-- Doctor Form -->
+        <div class="form-container">
+
+            <h2>Doctor Information</h2>
+
+            <form action="#" method="post"
+                  enctype="multipart/form-data">
+
+                <!-- Name and Specialization -->
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="name">Doctor Name *</label>
+                        <input type="text"
+                               id="name"
+                               name="name"
+                               placeholder="Enter doctor name"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="specialization">Specialization *</label>
+                        <select id="specialization"
+                                name="specialization"
+                                required>
+                            <option value="">Select Specialization</option>
+                            <option value="General Physician">General Physician</option>
+                            <option value="Cardiologist">Cardiologist</option>
+                            <option value="Dermatologist">Dermatologist</option>
+                            <option value="Neurologist">Neurologist</option>
+                            <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+                            <option value="Pediatrician">Pediatrician</option>
+                            <option value="Dentist">Dentist</option>
+                            <option value="Gynecologist">Gynecologist</option>
+                            <option value="Ophthalmologist">Ophthalmologist</option>
+                            <option value="ENT Specialist">ENT Specialist</option>
+                            <option value="Psychiatrist">Psychiatrist</option>
+                            <option value="Surgeon">Surgeon</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Email and Phone -->
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               placeholder="doctor@example.com"
+                               required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel"
+                               id="phone"
+                               name="phone"
+                               placeholder="Enter phone number"
+                               required>
+                    </div>
+
+                </div>
+
+                <!-- Address -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="address">Address *</label>
+                        <textarea id="address"
+                                  name="address"
+                                  placeholder="Enter clinic or hospital address"
+                                  required></textarea>
+                    </div>
+                </div>
+
+                <!-- Biography -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="biography">Biography *</label>
+                        <textarea id="biography"
+                                  name="biography"
+                                  placeholder="Write about the doctor's experience, expertise and professional background"
+                                  required></textarea>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="education">Education *</label>
+                        <textarea id="education"
+                                  name="education"
+                                  placeholder="Enter qualifications, degrees and institutions"
+                                  required></textarea>
+                    </div>
+                </div>
+
+                <!-- Available Days -->
+                <div class="form-row">
+                    <div class="form-group">
+
+                        <label>Available Days *</label>
+
+                        <div class="days-container">
+                            <label>
+                                <input type="checkbox" name="days"
+                                       value="Monday">
+                                Monday
+                            </label>
+
+                            <label>
+                                <input type="checkbox" name="days"
+                                       value="Tuesday">
+                                Tuesday
+                            </label>
+
+                            <label>
+                                <input type="checkbox" name="days"
+                                       value="Wednesday">
+                                Wednesday
+                            </label>
+
+                            <label>
+                                <input type="checkbox" name="days"
+                                       value="Thursday">
+                                Thursday
+                            </label>
+
+                            <label>
+                                <input type="checkbox" name="days"
+                                       value="Friday">
+                                Friday
+                            </label>
+
+                            <label>
+                                <input type="checkbox" name="days"
+                                       value="Saturday">
+                                Saturday
+                            </label>
+
+                            <label>
+                                <input type="checkbox" name="days"
+                                       value="Sunday">
+                                Sunday
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Available Time -->
+                <div class="form-row">
+
+                    <div class="form-group">
+                        <label for="startTime">Available From *</label>
+
+                        <select id="startTime"
+                                name="startTime"
+                                required>
+                            <option value="">Select start time</option>
+                            <option value="09:00 AM">09:00 AM</option>
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="01:00 PM">01:00 PM</option>
+                            <option value="02:00 PM">02:00 PM</option>
+                            <option value="03:00 PM">03:00 PM</option>
+                            <option value="04:00 PM">04:00 PM</option>
+                            <option value="05:00 PM">05:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="endTime">Available Until *</label>
+
+                        <select id="endTime"
+                                name="endTime"
+                                required>
+                            <option value="">Select end time</option>
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="11:00 AM">11:00 AM</option>
+                            <option value="12:00 PM">12:00 PM</option>
+                            <option value="01:00 PM">01:00 PM</option>
+                            <option value="02:00 PM">02:00 PM</option>
+                            <option value="03:00 PM">03:00 PM</option>
+                            <option value="04:00 PM">04:00 PM</option>
+                            <option value="05:00 PM">05:00 PM</option>
+                            <option value="06:00 PM">06:00 PM</option>
+                            <option value="07:00 PM">07:00 PM</option>
+                            <option value="08:00 PM">08:00 PM</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Profile Image -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="image">Profile Image *</label>
+
+                        <input type="file"
+                               id="image"
+                               name="image"
+                               accept="image/*"
+                               required>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="button-container">
+
+                    <button type="submit" class="save-btn">
+                        Save Doctor
+                    </button>
+
+                    <a href="doctors.html" class="cancel-btn">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </main>
+
+</body>
+</html>

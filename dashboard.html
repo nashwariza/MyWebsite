@@ -1,0 +1,366 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediplus Admin Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6fb;
+            color: #333;
+        }
+
+        /* Dashboard Layout */
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: linear-gradient(180deg, #3020e8, #6812e8);
+            color: white;
+            padding: 25px 18px;
+        }
+
+        .brand {
+            font-size: 25px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 35px;
+        }
+
+        .brand span {
+            color: #cfc7ff;
+            font-size: 15px;
+            font-weight: normal;
+        }
+
+        .sidebar nav a {
+            display: block;
+            color: #eeeaff;
+            text-decoration: none;
+            padding: 14px 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            font-size: 15px;
+            transition: background 0.3s;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Top Navigation */
+        .topbar {
+            min-height: 70px;
+            background: linear-gradient(90deg, #3920ed, #4b0ce7);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px 30px;
+        }
+
+        .location {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-form {
+            display: flex;
+        }
+
+        .search {
+            width: 250px;
+            max-width: 100%;
+            padding: 11px 14px;
+            border: none;
+            border-radius: 6px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .search:focus {
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .logout {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .logout:hover {
+            color: #d8d1ff;
+        }
+
+        /* Dashboard Content */
+        .content {
+            padding: 35px 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .content h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #25213b;
+        }
+
+        .content p {
+            color: #777;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* Dashboard Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+            margin-top: 35px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #4b0ce7;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.09);
+        }
+
+        .card h3 {
+            font-size: 15px;
+            color: #777;
+            margin-bottom: 18px;
+        }
+
+        .card h2 {
+            font-size: 32px;
+            color: #4b0ce7;
+        }
+
+        .card.doctors {
+            border-left-color: #4b0ce7;
+        }
+
+        .card.appointments {
+            border-left-color: #16a085;
+        }
+
+        .card.enquiries {
+            border-left-color: #f39c12;
+        }
+
+        .card.appointments h2 {
+            color: #16a085;
+        }
+
+        .card.enquiries h2 {
+            color: #f39c12;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1000px) {
+            .cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 760px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 18px;
+            }
+
+            .brand {
+                margin-bottom: 15px;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .sidebar nav a {
+                padding: 10px;
+                margin: 0;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+                padding: 18px;
+            }
+
+            .top-actions {
+                width: 100%;
+                gap: 15px;
+            }
+
+            .search-form {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .search {
+                width: 100%;
+            }
+
+            .content {
+                padding: 25px 18px;
+            }
+
+            .content h1 {
+                font-size: 23px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .top-actions {
+                flex-wrap: wrap;
+            }
+
+            .search-form {
+                flex-basis: 100%;
+            }
+
+            .card {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+
+            <div class="brand">
+                Mediplus<br>
+                <span>Admin Panel</span>
+            </div>
+
+            <nav aria-label="Main navigation">
+                <a href="{% url 'dashboard' %}" class="active">Dashboard</a>
+                <a href="{% url 'doctors' %}">Doctors</a>
+                <a href="appointments.html">Appointments</a>
+                <a href="enquiries.html">Enquiries</a>
+                <a href="subscribers.html">Newsletter Subscribers</a>
+                <a href="settings.html">Settings</a>
+            </nav>
+
+        </aside>
+
+        <!-- Main Section -->
+        <main class="main">
+
+            <!-- Topbar -->
+            <header class="topbar">
+
+                <div class="location">
+                    Kerala | INDIA
+                </div>
+
+                <div class="top-actions">
+
+                    <form class="search-form" action="#" method="get">
+                        <input
+                            class="search"
+                            type="search"
+                            name="q"
+                            placeholder="Search doctors or departments"
+                            aria-label="Search doctors or departments"
+                        >
+                    </form>
+
+                    <a href="login.php" class="logout">Logout</a>
+
+                </div>
+
+            </header>
+
+            <!-- Dashboard Content -->
+            <section class="content">
+
+                <h1>Welcome anci to Mediplus Admin Dashboard</h1>
+
+                <p>
+                    This is your dashboard where you can manage
+                    doctors, appointments, enquiries, and settings.
+                </p>
+
+                <!-- Dashboard Statistics -->
+                <div class="cards">
+
+                    <div class="card doctors">
+                        <h3>Total Doctors</h3>
+                        <h2>0</h2>
+                    </div>
+
+                    <div class="card appointments">
+                        <h3>Total Appointments</h3>
+                        <h2>0</h2>
+                    </div>
+
+                    <div class="card enquiries">
+                        <h3>Total Enquiries</h3>
+                        <h2>0</h2>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+</body>
+</html>

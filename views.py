@@ -1,16 +1,15 @@
 from django.shortcuts import render
 
 # Create your views here.
-def home(request):
-    return render(request,'index.html')
-def about(request):
-    return render(request, 'about.html')
-def service(request):
-    return render(request, 'service.html')
-def doctor(request):
-    return render(request, 'doctor.html')
 
-def contact(request):
-    return render(request, 'contact.html')
-def blog(request):
-    return render(request, 'blog.html')
+def dashboard(request):
+    return render(request, 'backend/dashboard.html')
+
+def doctors(request):
+    return render(request, 'backend/doctors.html')
+
+def add_doctor(request):
+    return render(request, 'backend/add_doctor.html')
+
+def edit_doctor(request):
+    return render(request, 'backend/edit_doctor.html')

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mediplus Admin - Doctors List</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background-color: #4b12a5;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 20px;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+            font-size: 22px;
+        }
+
+        .sidebar nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+
+        .sidebar nav a:hover,
+        .sidebar nav a.active {
+            background-color: #6828c7;
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 220px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Topbar */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .search-form {
+            display: flex;
+            flex: 1;
+            max-width: 350px;
+        }
+
+        .search-form input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-form input:focus {
+            border-color: #4b12a5;
+        }
+
+        .add-btn {
+            background-color: #198754;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .add-btn:hover {
+            background-color: #146c43;
+        }
+
+        /* Heading */
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            font-size: 27px;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* Doctor Cards */
+        .doctor-container {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .doctor-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .doctor-card img {
+            display: block;
+            width: 100%;
+            height: 190px;
+            object-fit: cover;
+        }
+
+        .doctor-info {
+            padding: 18px;
+        }
+
+        .doctor-info h3 {
+            margin-bottom: 8px;
+            font-size: 18px;
+        }
+
+        .doctor-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .doctor-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            display: inline-block;
+            padding: 9px 14px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 13px;
+            text-align: center;
+            border: none;
+        }
+
+        .edit-btn {
+            background-color: #f0ad32;
+            color: #222;
+        }
+
+        .edit-btn:hover {
+            background-color: #dfa027;
+        }
+
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #bb2d3b;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 35px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            background-color: white;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .pagination a:hover,
+        .pagination a.current {
+            background-color: #4b12a5;
+            color: white;
+            border-color: #4b12a5;
+        }
+
+        /* Tablet */
+        @media (max-width: 1100px) {
+            .doctor-container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                min-height: auto;
+                padding: 18px;
+            }
+
+            .sidebar h2 {
+                margin-bottom: 15px;
+            }
+
+            .sidebar nav {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            .sidebar nav a {
+                padding: 10px;
+                margin: 0;
+                font-size: 13px;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .topbar {
+                align-items: stretch;
+                flex-direction: column;
+                margin-bottom: 28px;
+            }
+
+            .search-form {
+                max-width: none;
+            }
+
+            .add-btn {
+                text-align: center;
+            }
+
+            .doctor-container {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .doctor-container {
+                grid-template-columns: 1fr;
+            }
+
+            .page-heading h1 {
+                font-size: 23px;
+            }
+
+            .doctor-card img {
+                height: 220px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <h2>Mediplus Admin</h2>
+
+        <nav aria-label="Main navigation">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'doctors' %}" class="active">Doctors</a>
+            <a href="appointments.html">Appointments</a>
+            <a href="enquiries.html">Enquiries</a>
+            <a href="subscribers.html">Newsletter Subscribers</a>
+            <a href="settings.html">Settings</a>
+        </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+
+        <!-- Topbar -->
+        <header class="topbar">
+
+            <form class="search-form" action="{% url 'doctors' %}" method="get">
+                {%csrf_token %}
+                <input
+                    type="search"
+                    name="q"
+                    placeholder="Search doctors..."
+                    aria-label="Search doctors"
+                >
+            </form>
+
+            <a href="{% url 'add_doctor' %}" class="add-btn">
+                + Add Doctor
+            </a>
+
+        </header>
+
+        <!-- Page Heading -->
+        <section class="page-heading">
+            <h1>Doctors List</h1>
+            <p>View and manage the doctors registered with Mediplus.</p>
+        </section>
+
+        <!-- Doctor Cards -->
+        <section class="doctor-container" aria-label="Doctors">
+
+            <!-- Doctor 1 -->
+            <article class="doctor-card">
+
+                <img
+                    src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500"
+                    alt="Portrait of Dr. Arun Kumar"
+                >
+
+                <div class="doctor-info">
+                    <h3>Dr. Arun Kumar</h3>
+                    <p>General Physician</p>
+
+                    <div class="doctor-actions">
+                        <a href="{% url 'edit_doctor' %}"
+                           class="edit-btn">Edit</a>
+
+                        <a href="{% url 'edit_doctor' %}"
+                           class="delete-btn">Delete</a>
+                    </div>
+                </div>
+
+            </article>
+
+            <!-- Doctor 2 -->
+            <article class="doctor-card">
+
+                <img
+                    src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=500"
+                    alt="Portrait of Dr. Rohan Mathew"
+                >
+
+                <div class="doctor-info">
+                    <h3>Dr. Rohan Mathew</h3>
+                    <p>Surgeon</p>
+
+                    <div class="doctor-actions">
+                        <a href="{% url 'edit_doctor' %}"
+                           class="edit-btn">Edit</a>
+
+                        <a href="#"
+                           class="delete-btn">Delete</a>
+                    </div>
+                </div>
+
+            </article>
+
+            <!-- Doctor 3 -->
+            <article class="doctor-card">
+
+                <img
+                    src="https://images.unsplash.com/photo-1612531386530-97286d97c2d2?w=500"
+                    alt="Portrait of Dr. Ameer Rahman"
+                >
+
+                <div class="doctor-info">
+                    <h3>Dr. Ameer Rahman</h3>
+                    <p>Cardiologist</p>
+
+                    <div class="doctor-actions">
+                        <a href="{% url 'edit_doctor' %}"
+                           class="edit-btn">Edit</a>
+
+                        <a href="delete_doctor.html?name=Dr.%20Ameer%20Rahman"
+                           class="delete-btn">Delete</a>
+                    </div>
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- Pagination -->
+        <nav class="pagination" aria-label="Pagination">
+            <a href="doctors.html" aria-label="Previous page">&laquo;</a>
+            <a href="doctors.html" class="current" aria-current="page">1</a>
+            <a href="doctors-page-2.html" aria-label="Next page">&raquo;</a>
+        </nav>
+
+    </main>
+
+</body>
+</html>
